@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reto Digital Misterioso</title>
+
+<style>
+/* ==== Variables para colores y barra ==== */
+:root{
+    --green: #00ff00;
+    --blue: #00aaff;
+    --bg: #000;
+    --accent: #7dd3fc;
+    --accent-2: #60a5fa;
+    --dark-blue: #0710211c;
+    --light-blue-bg: #0b1220;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 40px;
+}
+
+/* ==== Barra de navegación ==== */
+.main-nav {
+    display:flex;
+    justify-content:center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-lg);
+    border-bottom:2px solid var(--accent-2);
+    background:var(--light-blue-bg);
+    border-radius:8px;
+    box-shadow:0 4px 10px rgba(201, 3, 3, 0.3);
+    position:relative;
+    z-index:5;
+}
+.main-nav a {
+    color: var(--accent);
+    text-decoration:none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius:6px;
+    transition: background 0.3s, color 0.3s;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+.main-nav a:hover{
+    background:var(--accent);
+    color:var(--dark-blue);
+    box-shadow:0 0 10px rgba(9, 221, 37, 0);
+}
+
+/* ==== Contenedor principal ==== */
+html, body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    font-family: 'Courier New', monospace;
+    color:var(--green);
+    overflow:hidden;
+}
+.container{
+    position:relative;
+    z-index:3;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:20px;
+    box-sizing:border-box;
+}
+h1{text-align:center; font-size:22px;}
+
+/* ==== UI de entrada ==== */
+input, button{
+    padding:10px 12px;
+    background:transparent;
+    border:2px solid currentColor;
+    color:currentColor;
+    font-size:16px;
+    outline:none;
+    border-radius:6px;
+}
+button{ cursor:pointer; margin-top:8px; }
+#message{ margin-top:12px; min-height:28px; opacity:0; transition:opacity .5s, transform .35s; transform:translateY(6px); text-align:center;}
+#message.show{ opacity:1; transform:translateY(0); }
+.shake{ animation: shake .45s;}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+
+/* ==== Pistas ocultas ==== */
+.hidden-hint{ color:#000; user-select:text;}
+.hidden-hint::selection{ background:#000; color:var(--green);}
+.hidden-hint-blue::selection{ background:#000; color:var(--blue);}
+body::after{ content: "01001000 01000001 01000011 01001011"; display:block; position:fixed; left:-9999px; }
+
+/* ==== Canvas lluvia ==== */
+#matrixCanvas{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:1;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .6s;
+    mix-blend-mode: screen;
+}
+#matrixCanvas.active{ opacity:0.95; }
+
+/* ==== Overlay Easter Egg ==== */
+.overlay{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,0.75);
+    color:var(--green);
+    z-index:10;
+    padding:20px;
+    text-align:center;
+    font-size:18px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s;
+}
+.overlay.show{ opacity:1; pointer-events:auto;}
+.overlay button{ margin-top:16px;}
+</style>
+</head>
+<body data-binary="01001000 01000001 01000011 01001011">
+
+<!--Prueba decodificarlo 01001000 01000001 01000011 01001011-->
+
+<!-- Barra de navegación -->
+<nav class="main-nav">
+  <a href="index.html">Inicio</a>
+  <a href="teclado.html">Teclado Interactivo</a>
+</nav>
+
+<div class="container">
+  <h1>💻 Introduce la clave secreta</h1>
+  <div class="hidden-hint" id="hintSpan">01001000 01000001 01000011 01001011</div>
+  <input id="keyInput" type="text" placeholder="Escribe la clave" autocomplete="off"/>
+  <button id="btn">Aceptar</button>
+  <div id="message" role="status"></div>
+  <div class="final" id="finalArea"></div>
+</div>
+
+<canvas id="matrixCanvas"></canvas>
+
+<div class="overlay" id="overlay">
+  <div>
+    <div id="eggText">[Pista oculta desbloqueada]</div>
+    <button id="closeEgg">Cerrar</button>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const KEY = 'HACK';
+const ALTERNATE_INTERVAL_MS = 10000;
+
+const input = document.getElementById('keyInput');
+const btn = document.getElementById('btn');
+const msg = document.getElementById('message');
+const finalArea = document.getElementById('finalArea');
+const canvas = document.getElementById('matrixCanvas');
+const hintSpan = document.getElementById('hintSpan');
+const overlay = document.getElementById('overlay');
+const eggText = document.getElementById('eggText');
+const closeEgg = document.getElementById('closeEgg');
+
+btn.addEventListener('click', checkKey);
+input.addEventListener('keydown', e=>{if(e.key==='Enter') checkKey();});
+closeEgg.addEventListener('click', ()=> overlay.classList.remove('show'));
+
+/* ==== Color alternante ==== */
+let colorState=0;
+function applyColorState(){
+  document.body.style.color = colorState===0?'#00ff00':'#00aaff';
+  if(colorState===0) hintSpan.classList.remove('hidden-hint-blue');
+  else hintSpan.classList.add('hidden-hint-blue');
+}
+applyColorState();
+setInterval(()=>{ colorState = 1-colorState; applyColorState(); }, ALTERNATE_INTERVAL_MS);
+
+/* ==== Mensajes ==== */
+function showMessage(text,isError=false){
+  msg.classList.add('show');
+  msg.textContent=text;
+  if(isError){ msg.classList.add('shake'); setTimeout(()=> msg.classList.remove('shake'),500);}
+  if(isError){ setTimeout(()=>{ msg.classList.remove('show'); },1800);}
+}
+
+/* ==== Validación ==== */
+function checkKey(){
+  const val = (input.value||'').trim().toUpperCase();
+  if(val===KEY){
+    showMessage('¡Acceso concedido!');
+    setTimeout(()=>{ revealSecret(); startMatrixRain(); },700);
+  } else showMessage('⚠️ Acceso denegado ⚠️', true);
+}
+
+/* ==== Mostrar secreto ==== */
+function revealSecret(){
+  const secretText="Has desbloqueado el nivel secreto.\n¡Felicidades!";
+  finalArea.textContent='';
+  let i=0;
+  const t=setInterval(()=>{ finalArea.textContent += secretText[i]||''; i++; if(i>secretText.length) clearInterval(t);},35);
+}
+
+/* ==== MATRIX RAIN Mejorada ==== */
+(function(){
+  const ctx = canvas.getContext('2d');
+  let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%".split('');
+  let fontSize = 16;
+  let columns;
+  let drops;
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    fontSize = Math.max(12,Math.floor(window.innerWidth/90));
+    columns = Math.floor(canvas.width/fontSize);
+    drops = Array(columns).fill(0).map(()=> Math.floor(Math.random()*canvas.height));
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let animationId=null, running=false;
+  function draw(){
+    ctx.fillStyle='rgba(0,0,0,0.05)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle=document.body.style.color;
+    ctx.font = fontSize+'px monospace';
+    for(let i=0;i<columns;i++){
+      const text=letters[Math.floor(Math.random()*letters.length)];
+      ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+      if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0;
+      drops[i]++;
+    }
+  }
+  function loop(){ draw(); animationId=requestAnimationFrame(loop);}
+  window.startMatrixRain=function(){ if(!running){ canvas.classList.add('active'); running=true; loop();}};
+  window.stopMatrixRain=function(){ if(running){ cancelAnimationFrame(animationId); animationId=null; running=false; canvas.classList.remove('active'); ctx.clearRect(0,0,canvas.width,canvas.height);}};
+})();
+
+/* ==== Easter Egg ==== */
+const secretSeq=['h','a','c','k']; let buffer=[];
+document.addEventListener('keydown', e=>{
+  if(e.key.length===1){
+    buffer.push(e.key.toLowerCase());
+    if(buffer.slice(-secretSeq.length).join('')===secretSeq.join('')){
+      showEgg(); buffer=[];
+    }
+  }
+});
+function showEgg(){
+  const metaBinary=document.querySelector('body').getAttribute('data-binary')||'';
+  const inverted=metaBinary.split(' ').reverse().join(' ');
+  eggText.textContent="Pista extra desbloqueada:\n"+inverted;
+  overlay.classList.add('show');
+}
+</script>
+
+</body>
+</html>

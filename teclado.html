@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Teclado Completo Interactivo</title>
+    
+    <link rel="stylesheet" href="teclado.css" />
+    <link rel="stylesheet" href="styles.css" /> 
+    <script defer src="script.js"></script>
+
+    <style>
+        /* ========================================= */
+        /* 1. VARIABLES Y ESTILOS BASE */
+        /* ========================================= */
+        :root {
+            /* Colores y espaciados basados en tus variables originales para la barra */
+            --accent: #7dd3fc;
+            --accent-2: #60a5fa;
+            --dark-blue: #071021;
+            --light-blue-bg: #0b1220;
+            --text: #e6eef8; 
+            --spacing-xs: 4px; /* Espacio mínimo entre teclas */
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 40px;
+        }
+
+        body {
+            margin: 0; /* CLAVE: Quitar margen para que la barra se pegue al tope */
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(180deg, #071021 0%, #071827 100%);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%; 
+            max-width: 1200px; /* Limita el contenido principal */
+            padding: 0 var(--spacing-md) var(--spacing-lg);
+            margin: 0 auto;
+        }
+
+        /* ----------------------------------------- */
+        /* 2. BARRA DE NAVEGACIÓN (INTEGRADA EN EL TOPE) */
+        /* ----------------------------------------- */
+        .main-nav {
+            width: 100%; /* CLAVE: Ocupa todo el ancho de la ventana */
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md) 0;
+            margin-bottom: var(--spacing-lg); /* Espacio después de la barra */
+            
+            /* Tus estilos de la barra */
+            border-bottom: 2px solid var(--accent-2);
+            background: var(--light-blue-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 0; /* Quitar border-radius si debe pegarse a los bordes */
+        }
+
+        .main-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            transition: background 0.3s ease, color 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .main-nav a:hover {
+            background: var(--accent);
+            color: var(--dark-blue);
+            box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
+        }
+
+        /* --- Estilos para los Modos Especiales (Se mantienen) --- */
+        body.neon .main-nav { border-bottom-color: rgb(78, 158, 158); box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4); background: rgba(0, 255, 255, 0.05); }
+        body.neon .main-nav a { color: #0ff; }
+        body.matrix-mode .main-nav { border-bottom-color: #00ff00; box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4); background: rgba(0, 255, 0, 0.05); }
+        body.matrix-mode .main-nav a { color: #00ff00; }
+
+        /* ----------------------------------------- */
+        /* 3. ESTILOS CLAVE DEL TECLADO (Alineación Horizontal) */
+        /* ----------------------------------------- */
+
+        .keyboard {
+            display: grid;
+            /* Columnas: Main | Espacio | Navegación | Numérico */
+            grid-template-columns: minmax(00px, auto) var(--spacing-md) minmax(140px, 1fr) minmax(160px, 1fr);
+            grid-auto-rows: min-content; 
+            gap: var(--spacing-xs); 
+            padding: var(--spacing-md);
+            background: var(--dark-blue);
+            border-radius: 1px;
+            margin-top: var(--spacing-md);
+        }
+
+        .key {
+            background: #1a273f;
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            border: 1px solid var(--accent-2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            transition: transform 0.1s ease, background 0.1s;
+            user-select: none;
+            min-width: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .key:active, .key.pressed {
+            transform: translateY(1px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+            background: linear-gradient(90deg, var(--accent-2), var(--accent));
+            color: var(--dark-blue);
+        }
+
+        /* Contenedores de secciones del teclado */
+        .main-keys { grid-column: 1 / 2; display: flex; flex-direction: column; gap: var(--spacing-xs); }
+        .main-keys .row { display: flex; gap: var(--spacing-xs); }
+
+        /* Navegación y NumPad: Alineación al inicio para evitar estiramiento vertical */
+        .nav-edit-keys {
+            grid-column: 3 / 4; 
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            align-content: start; /* CLAVE para la alineación horizontal */
+            gap: var(--spacing-xs);
+        }
+        .numpad {
+            grid-column: 4 / 5; 
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            align-content: start; /* CLAVE para la alineación horizontal */
+            gap: var(--spacing-xs);
+        }
+
+        /* Ajustes específicos de tamaño (Flex-grow se mantiene) */
+        .main-keys .row:nth-child(4) .key:nth-last-child(1) { flex-grow: 1.5; width: auto; } /* Enter */
+        .main-keys .row:nth-child(5) .key:nth-child(1) { flex-grow: 1.5; width: auto; } /* Shift izq */
+        .main-keys .row:nth-child(5) .key:nth-last-child(1) { flex-grow: 2; width: auto; } /* Shift der */
+        .main-keys .row:nth-child(6) .key.space { flex-grow: 4; min-width: 200px; } 
+
+        /* Posición de teclas grandes en Numpad (Grid) */
+        .numpad .key.plus { grid-row: 2 / span 2; grid-column: 4 / 5; }
+        .numpad .key.enter-numpad { grid-row: 4 / span 2; grid-column: 4 / 5; }
+        .numpad .key.zero { grid-column: span 2; }
+    </style>
+</head>
+
+
+<body>
+    
+    <nav class="main-nav">
+        <a href="index.html">Inicio</a>
+        <a href="Reto.html">Reto Misterioso</a>
+    </nav>
+
+    <div class="container">
+        <h1>⌨️ Teclado Completo Interactivo</h1>
+        <p>Haz clic en cualquier tecla para verla animarse y su función detallada.</p>
+
+        <div id="keyInfo" style="margin-top: 20px; padding: 16px; background: #0b1220; border: 1px solid #60a5fa; border-radius: 12px; box-shadow: 0 0 10px rgba(125, 211, 252, 0.2); color: #cbd5e1;">
+            <h2 id="keyTitle">Haz clic en una tecla</h2>
+            <p id="keyDescription">Aquí aparecerá su función o uso.</p>
+        </div>
+
+        <div class="keyboard">
+            <div class="main-keys">
+                <div class="row">
+                    <div class="key">Esc</div>
+                    <div class="key">F1</div><div class="key">F2</div><div class="key">F3</div><div class="key">F4</div>
+                    <div class="key">F5</div><div class="key">F6</div><div class="key">F7</div><div class="key">F8</div>
+                    <div class="key">F9</div><div class="key">F10</div><div class="key">F11</div><div class="key">F12</div>
+                </div>
+
+                <div class="row">
+                    <div class="key">~</div><div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key">4</div>
+                    <div class="key">5</div><div class="key">6</div><div class="key">7</div><div class="key">8</div><div class="key">9</div>
+                    <div class="key">0</div><div class="key">-</div><div class="key">=</div><div class="key">←</div>
+                </div>
+
+                <div class="row">
+                    <div class="key">Tab</div><div class="key">Q</div><div class="key">W</div><div class="key">E</div><div class="key">R</div>
+                    <div class="key">T</div><div class="key">Y</div><div class="key">U</div><div class="key">I</div><div class="key">O</div>
+                    <div class="key">P</div><div class="key">[</div><div class="key">]</div><div class="key">\</div>
+                </div>
+
+                <div class="row">
+                    <div class="key">Caps</div><div class="key">A</div><div class="key">S</div><div class="key">D</div><div class="key">F</div>
+                    <div class="key">G</div><div class="key">H</div><div class="key">J</div><div class="key">K</div><div class="key">L</div>
+                    <div class="key">;</div><div class="key">'</div><div class="key">Enter</div>
+                </div>
+
+                <div class="row">
+                    <div class="key">Shift</div><div class="key">Z</div><div class="key">X</div><div class="key">C</div><div class="key">V</div>
+                    <div class="key">B</div><div class="key">Ñ</div><div class="key">N</div><div class="key">M</div><div class="key">,</div><div class="key">.</div>
+                    <div class="key">/</div><div class="key">Shift</div>
+                </div>
+
+                <div class="row">
+                    <div class="key">Ctrl</div><div class="key">Win</div><div class="key">Alt</div>
+                    <div class="key space">Espacio</div>
+                    <div class="key">Alt</div><div class="key">Fn</div><div class="key">Ctrl</div>
+                </div>
+            </div>
+
+            <div class="nav-edit-keys">
+                <div class="key">Insert</div><div class="key">Home</div><div class="key">PgUp</div>
+                <div class="key">Delete</div><div class="key">End</div><div class="key">PgDn</div>
+
+                <div class="row arrows" style="grid-column: 1 / -1; margin-top: 12px; justify-content: space-around;">
+                    <div class="key" style="visibility: hidden;"></div><div class="key">↑</div><div class="key" style="visibility: hidden;"></div>
+                </div>
+                <div class="row arrows" style="grid-column: 1 / -1; justify-content: space-around;">
+                    <div class="key">←</div><div class="key">↓</div><div class="key">→</div>
+                </div>
+            </div>
+
+            <div class="numpad">
+                <div class="key">Num</div><div class="key">/</div><div class="key">*</div><div class="key">-</div>
+                <div class="key">7</div><div class="key">8</div><div class="key">9</div><div class="key plus">+</div>
+                <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+                <div class="key">1</div><div class="key">2</div><div class="key">3</div><div class="key enter-numpad">Enter</div>
+                <div class="key zero">0</div><div class="key">.</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // El JavaScript de las funcionalidades se mantiene sin cambios
+    const keyInfo = document.getElementById("keyInfo");
+    const keyTitle = document.getElementById("keyTitle");
+    const keyDescription = document.getElementById("keyDescription");
+
+    const keyData = {
+        "Esc": "Cancela operaciones o cierra menús.",
+        "F1": "Abre la ayuda en la mayoría de los programas.",
+        "F2": "Renombra archivos o elementos.",
+        "F3": "Abre búsqueda en muchos programas.",
+        "F4": "Usado con Alt para cerrar ventanas.",
+        "F5": "Recarga la página o ventana.",
+        "F6": "Mueve el cursor a la barra de direcciones.",
+        "F7": "Activa revisión ortográfica en algunos programas.",
+        "F8": "Accede al modo seguro en algunos sistemas.",
+        "F9": "Actualiza campos en Word.",
+        "F10": "Activa la barra de menú.",
+        "F11": "Activa pantalla completa.",
+        "F12": "Abre herramientas de desarrollador.",
+        "Tab": "Mueve el cursor entre campos.",
+        "Caps": "Activa o desactiva mayúsculas.",
+        "Shift": "Permite escribir mayúsculas o activar funciones secundarias.",
+        "Ctrl": "Modificador para atajos como Ctrl+C (copiar).",
+        "Alt": "Modificador para accesos rápidos y menús.",
+        "Enter": "Confirma acciones o envía formularios.",
+        "←": "Retroceso. Borra el carácter anterior.",
+        "Delete": "Elimina el carácter siguiente.",
+        "Insert": "Alterna entre insertar y sobrescribir.",
+        "Home": "Va al inicio de la línea.",
+        "End": "Va al final de la línea.",
+        "PgUp": "Desplaza hacia arriba.",
+        "PgDn": "Desplaza hacia abajo.",
+        "↑": "Navega hacia arriba.",
+        "↓": "Navega hacia abajo.",
+        "→": "Navega hacia la derecha.",
+        "Win": "Abre el menú de inicio en Windows.",
+        "Fn": "Activa funciones especiales del teclado.",
+        "Espacio": "Inserta un espacio entre palabras.",
+        "Num": "Activa el teclado numérico.",
+        "A": "Letra A. Se usa para escribir palabras.",
+        "B": "Letra B. Se usa para escribir palabras.",
+        "C": "Letra C. Se usa para escribir palabras.",
+        "D": "Letra D. Se usa para escribir palabras.",
+        "E": "Letra E. Se usa para escribir palabras.",
+        "F": "Letra F. Se usa para escribir palabras.",
+        "G": "Letra G. Se usa para escribir palabras.",
+        "H": "Letra H. Se usa para escribir palabras.",
+        "I": "Letra I. Se usa para escribir palabras.",
+        "J": "Letra J. Se usa para escribir palabras.",
+        "K": "Letra K. Se usa para escribir palabras.",
+        "L": "Letra L. Se usa para escribir palabras.",
+        "M": "Letra M. Se usa para escribir palabras.",
+        "N": "Letra N. Se usa para escribir palabras.",
+        "Ñ": "Letra Ñ. Se usa para escribir palabras.",
+        "O": "Letra O. Se usa para escribir palabras.",
+        "P": "Letra P. Se usa para escribir palabras.",
+        "Q": "Letra Q. Se usa para escribir palabras.",
+        "R": "Letra R. Se usa para escribir palabras.",
+        "S": "Letra S. Se usa para escribir palabras.",
+        "T": "Letra T. Se usa para escribir palabras.",
+        "U": "Letra U. Se usa para escribir palabras.",
+        "V": "Letra V. Se usa para escribir palabras.",
+        "W": "Letra W. Se usa para escribir palabras.",
+        "X": "Letra X. Se usa para escribir palabras.",
+        "Y": "Letra Y. Se usa para escribir palabras.",
+        "Z": "Letra Z. Se usa para escribir palabras.",
+        "0": "Número 0. Se usa en cálculos y contraseñas.",
+        "1": "Número 1. Se usa en cálculos y contraseñas.",
+        "2": "Número 2. Se usa en cálculos y contraseñas.",
+        "3": "Número 3. Se usa en cálculos y contraseñas.",
+        "4": "Número 4. Se usa en cálculos y contraseñas.",
+        "5": "Número 5. Se usa en cálculos y contraseñas.",
+        "6": "Número 6. Se usa en cálculos y contraseñas.",
+        "7": "Número 7. Se usa en cálculos y contraseñas.",
+        "8": "Número 8. Se usa en cálculos y contraseñas.",
+        "9": "Número 9. Se usa en cálculos y contraseñas.",
+        "+": "Suma en operaciones matemáticas.",
+        "-": "Resta en operaciones matemáticas.",
+        "*": "Multiplicación en operaciones matemáticas.",
+        "/": "División en operaciones matemáticas.",
+        ".": "Punto decimal.",
+        "=": "Símbolo de igualdad.",
+        "~": "Tilde. Usado en programación.",
+        "[": "Corchete izquierdo.",
+        "]": "Corchete derecho.",
+        "\\": "Barra invertida.",
+        ";": "Punto y coma.",
+        "'": "Comilla simple.",
+        ",": "Coma.",
+        "/": "Barra diagonal."
+    };
+
+    document.querySelectorAll('.key').forEach(key => {
+        key.addEventListener('click', () => {
+            key.classList.add('pressed');
+            setTimeout(() => key.classList.remove('pressed'), 150);
+
+            const label = key.textContent.trim();
+            keyTitle.textContent = `Tecla: ${label}`;
+            keyDescription.textContent = keyData[label] || "Esta tecla es parte del teclado estándar.";
+            keyInfo.style.display = "block";
+        });
+    });
+</script>
+
+</body>
+</html>

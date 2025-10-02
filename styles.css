@@ -1,0 +1,885 @@
+/* 🌈 Variables globales */
+:root {
+    --bg: #0f1724;
+    --accent: #7dd3fc; /* Azul claro (Neon) */
+    --accent-2: #60a5fa; /* Azul medio */
+    --text: #e6eef8; /* Texto claro */
+    --glass: rgba(255, 255, 255, 0.04);
+    --dark-blue: #071021;
+    --light-blue-bg: #0b1220;
+}
+
+/* 🧱 Base */
+body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #071021 0%, #071827 100%);
+    color: var(--text);
+    /* Desactivar la transición para los modos especiales, usarla en elementos */
+    transition: background 0.6s ease; 
+    display: flex; /* Para centrar el contenedor principal */
+    justify-content: center;
+}
+
+/* Contenedor central de ancho fijo (para control de layout) */
+.main-content {
+    /* Este es el cambio clave: fija el ancho para que no se adapte demasiado */
+    width: 100%; 
+    max-width: 900px; /* Ancho máximo que define tu layout */
+    margin: 40px 20px; /* Margen superior/inferior y en los lados */
+    padding: 20px;
+    background: var(--glass);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+    animation: fadeIn 1s ease-out;
+}
+
+/* 🔝 Navegación */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--accent-2);
+}
+
+.main-nav a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.main-nav a:hover {
+    background: rgba(125, 211, 252, 0.1);
+}
+
+/* 🧠 Encabezado */
+.header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.2rem; /* Tamaño más coherente */
+    margin-bottom: 6px;
+    color: var(--accent);
+    text-shadow: 0 0 5px var(--accent);
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+}
+
+/* 🔤 Conversor y Formularios */
+.converter-section {
+    padding: 20px;
+    background: var(--light-blue-bg);
+    border-radius: 12px;
+    border: 1px solid var(--accent-2);
+}
+
+textarea, select, button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px; /* Aumentado para mejor tacto */
+    border-radius: 6px;
+    font-size: 16px; 
+    box-sizing: border-box; /* Crucial para que el padding no desborde el ancho */
+    border: 1px solid var(--accent-2);
+    background: var(--dark-blue);
+    color: var(--text);
+}
+
+textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(125, 211, 252, 0.5);
+}
+
+/* Botón de Conversión principal */
+button#convertBtn {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: var(--dark-blue); /* Texto oscuro en fondo claro */
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s;
+}
+
+button#convertBtn:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(125, 211, 252, 0.4);
+}
+
+/* Área de Resultado */
+pre {
+    margin-top: 16px;
+    background: var(--dark-blue);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px dashed var(--accent);
+    white-space: pre-wrap; /* Mantiene el formato pero permite el salto de línea */
+    font-size: 1rem;
+    overflow-x: auto; /* Permite scroll horizontal si el texto es muy largo */
+    animation: pulse 1s infinite alternate;
+}
+
+/* 🧪 Ejemplos interactivos */
+.examples {
+    margin-top: 20px;
+}
+
+.examples h2 {
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+.examples ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.examples ul li {
+    flex-grow: 1;
+}
+
+.example-btn {
+    width: 100%; /* Para que los botones se estiren */
+    background: var(--dark-blue);
+    color: var(--accent);
+    border: 1px solid var(--accent-2);
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.example-btn:hover {
+    background: rgba(125, 211, 252, 0.1);
+    transform: scale(1.02);
+}
+
+/* 📚 Sección informativa */
+.info-section {
+    margin-top: 40px;
+    background: var(--light-blue-bg);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--accent-2);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.2);
+}
+
+.code-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.code-info h3 {
+    margin-top: 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.code-info p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* 🕵️‍♂️ Secreto oculto */
+#secreto {
+    margin-top: 30px;
+    padding: 20px;
+    background: #04263b;
+    border-radius: 12px;
+    border: 2px dashed var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.3);
+}
+
+/* 🎹 Estilos de la página Teclado */
+.keyboard-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: var(--light-blue-bg);
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+    border: 2px solid var(--accent-2);
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Divide en 2 columnas: Teclado y Info */
+    gap: 20px;
+}
+
+/* Cuadrícula real del teclado */
+.keyboard-grid {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las teclas bajen de línea */
+    gap: 6px;
+    align-content: flex-start; /* Alinea las filas al inicio */
+}
+
+.key {
+    background: var(--dark-blue);
+    color: var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid var(--accent-2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s;
+    user-select: none;
+    min-width: 25px; /* Evita que las teclas pequeñas se colapsen */
+}
+
+/* Estilos de las teclas modificadoras */
+.key.key-enter { min-width: 80px; }
+.key.key-shift { min-width: 70px; }
+.key.key-tab { min-width: 60px; }
+.key.key-caps { min-width: 70px; }
+.key.key-space { flex-grow: 1; min-width: 200px; } /* Crece para ocupar el espacio central */
+
+/* Estado de la tecla presionada */
+.key:active, .key.pressed {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(90deg, #60a5fa, #7dd3fc);
+    color: var(--dark-blue);
+}
+
+/* Área de Información de la Tecla */
+.key-info {
+    padding: 20px;
+    background: var(--dark-blue);
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
+    position: sticky; /* Se mantiene visible al hacer scroll */
+    top: 20px; /* Separación del borde superior */
+}
+
+.key-info.hidden {
+    /* Puedes usar JS para quitar esta clase cuando se hace click */
+    opacity: 0; 
+}
+
+/* 🧪 Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* ✨ Modos secretos */
+body.neon {
+    background: #000;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+}
+
+body.neon .main-content, body.neon .converter-section, body.neon .info-section, body.neon #secreto {
+    border-color: #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.05);
+}
+
+body.neon h1, body.neon h3, body.neon a, body.neon button, body.neon .key {
+    color: #0ff;
+    text-shadow: 0 0 4px #0ff;
+}
+
+body.neon button#convertBtn {
+    background: #0ff;
+    color: #000;
+    box-shadow: 0 0 15px #0ff;
+}
+
+body.matrix-mode {
+    background: black;
+    color: #00ff00;
+    font-family: 'Matrix Code NFI', 'Courier New', monospace; /* Usar fuente si la tienes */
+    text-shadow: 0 0 4px #00ff00;
+}
+
+body.matrix-mode .main-content, body.matrix-mode .converter-section, body.matrix-mode .info-section {
+    border-color: #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    background: rgba(0, 255, 0, 0.05);
+}
+body.matrix-mode button#convertBtn {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 15px #00ff00;
+}
+body.matrix-mode pre {
+    border: 1px dashed #00ff00;
+    animation: none;
+}
+body.matrix-mode .key {
+    color: #00ff00;
+    border-color: #00ff00;
+}
+
+/* 🌀 Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    from { box-shadow: 0 0 10px rgba(125, 211, 252, 0.2); }
+    to { box-shadow: 0 0 20px rgba(125, 211, 252, 0.4); }
+}
+
+/* 📱 Responsive BÁSICO (Para asegurar que se vea bien en móviles) */
+@media (max-width: 920px) {
+    .main-content {
+        margin: 20px 10px; /* Reducir margen en pantallas pequeñas */
+        padding: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Apila las columnas del teclado en pantallas muy pequeñas */
+    .keyboard-section {
+        grid-template-columns: 1fr; 
+    }
+    .key-info {
+        position: static; /* Quita el sticky para que fluya en móvil */
+    }
+    .keyboard-grid {
+        gap: 4px; /* Reduce un poco el espacio entre teclas */
+    }
+    .key {
+        font-size: 10px;
+        padding: 8px 10px;
+    }
+}
+
+/* 🌈 Variables globales */
+:root {
+    --bg: #0f1724;
+    --accent: #7dd3fc; /* Azul claro (Neon) */
+    --accent-2: #60a5fa; /* Azul medio */
+    --text: #e6eef8; /* Texto claro */
+    --glass: rgba(255, 255, 255, 0.04);
+    --dark-blue: #071021;
+    --light-blue-bg: #0b1220;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 40px;
+}
+
+/* 🧱 Base */
+body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #071021 0%, #071827 100%);
+    color: var(--text);
+    transition: background 0.6s ease;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la vista */
+    padding: var(--spacing-md) 0; /* Padding global para el body */
+}
+
+/* Contenedor central de ancho fijo (para control de layout) */
+.main-content {
+    width: 100%;
+    max-width: 900px; /* Ancho máximo para el contenido */
+    margin: 0 var(--spacing-md); /* Margen en los lados para evitar que pegue a los bordes */
+    padding: var(--spacing-lg); /* Padding interno aumentado */
+    background: var(--glass);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+    animation: fadeIn 1s ease-out;
+    display: flex; /* Usamos flexbox para organizar las secciones verticalmente */
+    flex-direction: column;
+    gap: var(--spacing-lg); /* Espacio entre las secciones principales */
+}
+
+/* 🔝 Navegación */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--accent-2);
+}
+
+.main-nav a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.main-nav a:hover {
+    background: rgba(125, 211, 252, 0.1);
+}
+
+/* 🧠 Encabezado */
+.header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem; /* Aumentado para mayor impacto */
+    margin-bottom: var(--spacing-sm);
+    color: var(--accent);
+    text-shadow: 0 0 8px var(--accent);
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+/* 🔤 Convertidor Principal - Nueva estructura para más espacio */
+.converter-area {
+    background: var(--light-blue-bg);
+    border-radius: 12px;
+    border: 1px solid var(--accent-2);
+    padding: var(--spacing-lg); /* Padding interno generoso */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg); /* Espacio entre el formulario, output y ejemplos */
+}
+
+.conversion-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm); /* Espacio entre los elementos del formulario */
+}
+
+textarea, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    border: 1px solid var(--accent-2);
+    background: var(--dark-blue);
+    color: var(--text);
+    resize: vertical; /* Permite redimensionar solo verticalmente el textarea */
+    min-height: 100px; /* Altura mínima para el textarea */
+}
+
+textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(125, 211, 252, 0.5);
+}
+
+label {
+    margin-top: var(--spacing-sm);
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Botón de Conversión principal */
+button#convertBtn {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: var(--dark-blue);
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s;
+    margin-top: var(--spacing-md); /* Espacio después del select */
+    padding: 15px; /* Botón más grande */
+    font-size: 1.1rem;
+}
+
+button#convertBtn:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 18px rgba(125, 211, 252, 0.4);
+}
+
+/* Área de Resultado */
+.output-container {
+    background: var(--dark-blue);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    border: 1px dashed var(--accent);
+    box-shadow: 0 0 10px rgba(125, 211, 252, 0.2);
+}
+
+.output-container h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+pre {
+    margin: 0; /* Elimina el margen por defecto */
+    white-space: pre-wrap;
+    font-size: 1rem;
+    overflow-x: auto;
+    animation: pulse 1s infinite alternate;
+}
+
+/* 🧪 Ejemplos interactivos */
+.examples h2 {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: var(--spacing-md);
+}
+
+.examples ul {
+    list-style: none;
+    padding: 0;
+    display: grid; /* Usamos grid para una mejor distribución de botones */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Botones se adaptan */
+    gap: var(--spacing-sm);
+}
+
+.example-btn {
+    width: auto; /* Dejar que el grid controle el ancho */
+    background: var(--dark-blue);
+    color: var(--accent);
+    border: 1px solid var(--accent-2);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.example-btn:hover {
+    background: rgba(125, 211, 252, 0.1);
+    transform: scale(1.02);
+}
+
+/* 📚 Sección informativa */
+.info-section {
+    background: var(--light-blue-bg);
+    padding: var(--spacing-lg);
+    border-radius: 12px;
+    border: 1px solid var(--accent-2);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md); /* Espacio entre los artículos de código */
+}
+
+.info-section h2 {
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+.code-info {
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.code-info h3 {
+    margin-top: 0;
+    color: var(--accent);
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.code-info p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.6; /* Aumentado para mejor legibilidad */
+}
+
+/* 🕵️‍♂️ Secreto oculto */
+#secreto {
+    padding: var(--spacing-md);
+    background: #04263b;
+    border-radius: 12px;
+    border: 2px dashed var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.3);
+    text-align: center;
+}
+
+#secreto h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+#secreto p {
+    font-size: 1.1rem;
+}
+
+
+/* 🎹 Estilos de la página Teclado */
+.keyboard-section {
+    background: var(--light-blue-bg);
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+    border: 2px solid var(--accent-2);
+    padding: var(--spacing-lg);
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Divide en 2 columnas: Teclado y Info */
+    gap: var(--spacing-lg); /* Espacio entre las dos columnas */
+}
+
+/* Cuadrícula real del teclado */
+.keyboard-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px; /* Espacio entre las teclas */
+    align-content: flex-start;
+}
+
+.key {
+    background: var(--dark-blue);
+    color: var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid var(--accent-2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s;
+    user-select: none;
+    min-width: 25px; /* Evita que las teclas pequeñas se colapsen */
+}
+
+/* Estilos de las teclas modificadoras */
+.key.key-enter { min-width: 80px; }
+.key.key-shift { min-width: 70px; }
+.key.key-tab { min-width: 60px; }
+.key.key-caps { min-width: 70px; }
+.key.key-space { flex-grow: 1; min-width: 200px; }
+
+/* Estado de la tecla presionada */
+.key:active, .key.pressed {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(90deg, #60a5fa, #7dd3fc);
+    color: var(--dark-blue);
+}
+
+/* Área de Información de la Tecla */
+.key-info {
+    padding: var(--spacing-md);
+    background: var(--dark-blue);
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
+    position: sticky;
+    top: var(--spacing-md);
+    height: fit-content; /* Se ajusta al contenido */
+}
+
+.key-info.hidden {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.key-info h2 {
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+.key-info p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+
+/* 🧪 Footer */
+footer {
+    text-align: center;
+    padding-top: var(--spacing-md);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(125, 211, 252, 0.1);
+}
+
+/* ✨ Modos secretos */
+body.neon {
+    background: #000;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+}
+
+body.neon .main-content, body.neon .converter-area, body.neon .info-section, body.neon #secreto, body.neon .output-container {
+    border-color: #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.05);
+}
+
+body.neon h1, body.neon h2, body.neon h3, body.neon label, body.neon a, body.neon .example-btn, body.neon .key {
+    color: #0ff;
+    text-shadow: 0 0 4px #0ff;
+}
+
+body.neon button#convertBtn {
+    background: #0ff;
+    color: #000;
+    box-shadow: 0 0 15px #0ff;
+}
+body.neon pre {
+    border-color: #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+body.neon textarea, body.neon select {
+    border-color: #0ff;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    background: rgba(0, 255, 255, 0.02);
+    color: #0ff;
+}
+
+
+body.matrix-mode {
+    background: black;
+    color: #00ff00;
+    font-family: 'Matrix Code NFI', 'Courier New', monospace; 
+    text-shadow: 0 0 4px #00ff00;
+}
+
+body.matrix-mode .main-content, body.matrix-mode .converter-area, body.matrix-mode .info-section, body.matrix-mode #secreto, body.matrix-mode .output-container {
+    border-color: #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    background: rgba(0, 255, 0, 0.05);
+}
+body.matrix-mode button#convertBtn {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 15px #00ff00;
+}
+body.matrix-mode pre {
+    border: 1px dashed #00ff00;
+    animation: none;
+}
+body.matrix-mode .key {
+    color: #00ff00;
+    border-color: #00ff00;
+}
+body.matrix-mode h1, body.matrix-mode h2, body.matrix-mode h3, body.matrix-mode label, body.matrix-mode a, body.matrix-mode .example-btn, body.matrix-mode .key {
+    color: #00ff00;
+    text-shadow: 0 0 4px #00ff00;
+}
+body.matrix-mode textarea, body.matrix-mode select {
+    border-color: #00ff00;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+    background: rgba(0, 255, 0, 0.02);
+    color: #00ff00;
+}
+
+
+/* 🌀 Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    from { box-shadow: 0 0 10px rgba(125, 211, 252, 0.2); }
+    to { box-shadow: 0 0 20px rgba(125, 211, 252, 0.4); }
+}
+
+/* 📱 Responsive BÁSICO (Para asegurar que se vea bien en móviles) */
+@media (max-width: 920px) {
+    .main-content {
+        margin: var(--spacing-md) var(--spacing-sm); /* Reducir margen en pantallas pequeñas */
+        padding: var(--spacing-md);
+        gap: var(--spacing-md); /* Menos espacio entre secciones */
+    }
+    .converter-area, .info-section, .keyboard-section {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 600px) {
+    .main-content {
+        margin: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    header h1 {
+        font-size: 2rem;
+    }
+    header p {
+        font-size: 1rem;
+    }
+    .converter-area, .info-section, .keyboard-section {
+        padding: var(--spacing-md) var(--spacing-sm); /* Más pequeño el padding interno */
+        gap: var(--spacing-sm);
+    }
+    .examples ul {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Más compactos */
+    }
+    .example-btn {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+    .keyboard-section {
+        grid-template-columns: 1fr;
+    }
+    .key-info {
+        position: static;
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+    .key {
+        font-size: 10px;
+        padding: 8px 10px;
+    }
+    .key.key-space { min-width: 150px; }
+}
+
+/* --- Estilos del Botón de Copiar --- */
+
+.output-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.output-controls pre {
+    flex-grow: 1;
+    margin: 0; /* Asegura que no haya doble margen */
+}
+
+#copyBtn {
+    /* Estilo diferente para destacar que es una acción secundaria */
+    background: var(--dark-blue);
+    color: var(--text);
+    border: 1px solid var(--accent-2);
+    padding: 10px 12px;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+    width: auto; /* Ancho automático, no 100% como los otros botones de formulario */
+    align-self: flex-end; /* Alinea el botón a la derecha */
+    margin-top: 0; /* Elimina el margen superior excesivo */
+}
+
+#copyBtn:hover {
+    background: rgba(125, 211, 252, 0.1);
+    transform: scale(1.02);
+}
+
+/* Ajustes para el modo NEON */
+body.neon #copyBtn {
+    background: rgba(0, 255, 255, 0.05);
+    color: #0ff;
+    border-color: #0ff;
+}
+body.matrix-mode #copyBtn {
+    background: rgba(0, 255, 0, 0.05);
+    color: #00ff00;
+    border-color: #00ff00;
+}

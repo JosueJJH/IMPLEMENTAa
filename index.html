@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Convertidor Digital</title>
+
+    <style>
+        /* 🌈 Variables que la barra necesita (solo si NO usas styles.css) */
+        :root {
+            --accent: #7dd3fc;
+            --accent-2: #60a5fa;
+            --dark-blue: #071021;
+            --light-blue-bg: #0b1220;
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 40px;
+        }
+        
+        /* 🔝 Barra de Navegación Estilizada */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md) 0;
+            margin: 0 0 var(--spacing-lg) 0;
+            border-bottom: 2px solid var(--accent-2);
+            background: var(--light-blue-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            transition: background 0.3s ease, color 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .main-nav a:hover {
+            background: var(--accent);
+            color: var(--dark-blue);
+            box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
+        }
+
+        /* --- Estilos para los Modos Especiales (solo si DEBEN funcionar aquí) --- */
+        /* Nota: Estos estilos deben duplicar los de styles.css para que persistan */
+        body.neon .main-nav {
+            border-bottom-color: #0ff;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+            background: rgba(0, 255, 255, 0.05);
+        }
+        body.neon .main-nav a {
+            color: #0ff;
+        }
+
+        body.matrix-mode .main-nav {
+            border-bottom-color: #00ff00;
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4);
+            background: rgba(0, 255, 0, 0.05);
+        }
+        body.matrix-mode .main-nav a {
+            color: #00ff00;
+        }
+
+    </style>
+    <link rel="stylesheet" href="styles.css" /> 
+    <script defer src="script.js"></script>
+</head>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Convertidor Digital</title>
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <script defer src="script.js"></script>
+
+</head>
+<body>
+    <div class="main-content"> <nav class="main-nav">
+           
+            <a href="teclado.html">Teclado Interactivo</a> 
+            <a href="Reto.html">Reto Misterioso</a> 
+        </nav>
+
+        <header class="header">
+            <h1>🧠 Convertidor Digital</h1>
+            <p>Convierte texto a binario, ASCII, hexadecimal, Base64 y Morse</p>
+        </header>
+
+        <section class="converter-area"> <div class="conversion-form"> <label for="inputText">Texto a convertir:</label>
+                <textarea id="inputText" rows="4" placeholder="Escribe tu texto aquí..."></textarea>
+
+                <label for="conversionType">Tipo de conversión:</label>
+<select id="conversionType">
+    <option value="binary">Texto → Binario</option>
+    <option value="ascii">Texto → ASCII</option>
+    <option value="hex">Texto → Hexadecimal</option>
+    <option value="base64">Texto → Base64</option>
+    <option value="morse">Texto → Morse</option>
+    
+    <option disabled>────── Decodificar ──────</option>
+    
+    <option value="decode_binary">Binario → Texto</option>
+    <option value="decode_ascii">ASCII → Texto</option>
+    <option value="decode_hex">Hexadecimal → Texto</option>
+    <option value="decode_base64">Base64 → Texto</option>
+    <option value="decode_morse">Morse → Texto</option>
+</select>
+
+                <button id="convertBtn">Convertir</button>
+            </div>
+
+           <div class="output-container"> 
+    <h3>Resultado de la Conversión:</h3>
+    <div class="output-controls">
+        <pre id="outputArea">(resultado aquí)</pre>
+        <button id="copyBtn" title="Copiar al portapapeles">📋 Copiar</button>
+    </div>
+</div>
+            
+            <section class="examples">
+                <h2>🧪 Prueba con estos ejemplos:</h2>
+                <ul>
+                    <li><button class="example-btn" data-text="Hola Mundo">Hola Mundo</button></li>
+                    <li><button class="example-btn" data-text="SOS">SOS</button></li>
+                    <li><button class="example-btn" data-text="neoncode">neoncode</button></li>
+                    <li><button class="example-btn" data-text="matrix">matrix</button></li>
+                    <li><button class="example-btn" data-text="trampa">trampa</button></li>
+                    <li><button class="example-btn" data-text="Josué">Josué</button></li> </ul>
+            </section>
+        </section>
+
+
+        <section class="info-section">
+            <h2>📚 ¿Qué significan estas codificaciones?</h2>
+
+            <article class="code-info">
+                <h3>🔢 Binario</h3>
+                <p>
+                    Usa solo <strong>0</strong> y <strong>1</strong>. Cada letra se convierte en 8 bits.  
+                    <br><em>Ejemplo:</em> <code>H</code> → <code>01001000</code>  
+                    <br><strong>Dato curioso:</strong> ¡Todo lo digital se basa en binario!
+                </p>
+            </article>
+
+            <article class="code-info">
+                <h3>🔤 ASCII</h3>
+                <p>
+                    Asigna un número a cada carácter.  
+                    <br><em>Ejemplo:</em> <code>A = 65</code>, <code>a = 97</code>  
+                    <br><strong>Usos:</strong> Archivos de texto, protocolos, programación.
+                </p>
+            </article>
+
+            <article class="code-info">
+                <h3>🧮 Hexadecimal</h3>
+                <p>
+                    Usa 16 símbolos: <code>0–9</code> y <code>A–F</code>.  
+                    <br><em>Ejemplo:</em> <code>65</code> → <code>41</code>  
+                    <br><strong>Usos:</strong> Colores web, direcciones de memoria.
+                </p>
+            </article>
+
+            <article class="code-info">
+                <h3>📦 Base64</h3>
+                <p>
+                    Convierte datos binarios en texto legible.  
+                    <br><em>Ejemplo:</em> <code>Hola</code> → <code>SG9sYQ==</code>  
+                    <br><strong>Usos:</strong> APIs, imágenes embebidas, correos.
+                </p>
+            </article>
+
+            <article class="code-info">
+                <h3>📡 Código Morse</h3>
+                <p>
+                    Usa puntos (<code>.</code>) y rayas (<code>-</code>).  
+                    <br><em>Ejemplo:</em> <code>SOS</code> → <code>... --- ...</code>  
+                    <br><strong>Dato curioso:</strong> Aún se usa en señales de emergencia.
+                </p>
+            </article>
+        </section>
+
+        <section id="secreto" style="display:none;">
+            <h2>🎉 ¡Laboratorio oculto desbloqueado!</h2>
+            <p>Has activado un modo especial. Prueba escribir <code>matrix</code> o <code>trampa</code> para ver qué pasa.</p>
+        </section>
+
+       
+
+    </div> </body>
+</html>
